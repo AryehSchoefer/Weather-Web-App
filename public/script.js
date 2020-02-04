@@ -13,7 +13,6 @@ const backgroundStyles = {
 const apiBase = 'api.openweathermap.org/data/2.5/'
 const API_KEY = '9081c26a42e71c0b2ecd31972a2c36ba'
 const proxy = 'https://cors-anywhere.herokuapp.com/' // for localhost use
-//const icon = document.querySelector('.icon')
 const icon = new Skycons({'color': 'white'})
 const body = document.body;
 const temperatureDegrees = document.querySelector('.temperature-degrees')
@@ -21,6 +20,7 @@ const apparentTemperature = document.querySelector('.apparent-temperature')
 const weatherDescription = document.querySelector('.weather-description')
 const city = document.querySelector('.city')
 const searchBox = document.querySelector('.data-location-search')
+//const icon = document.querySelector('.icon') <- for scrapped images
 //const searchBox = new google.maps.places.SearchBox(searchElement)
 
 function manageResults(data) {
@@ -68,6 +68,10 @@ function setWeatherData(data) {
     body.style.background = backgroundStyles[data.icon]
     body.style.backgroundAttachment = 'fixed'
 
+    // remove rain and snow effect by remove their classes
+    if (body.classList.contains("weather")) {
+        body.classList.remove("weather", "snow", "rain")
+    }
     // kinda performance intensive
     if (data.icon == 'rain') {
         body.classList.add('weather', 'rain')
