@@ -71,7 +71,7 @@ function setWeatherData(data) {
     // remove rain and snow effect by remove their classes
     if (body.classList.contains("weather")) {
         body.classList.remove("weather", "snow", "rain")
-    }
+    } 
     // kinda performance intensive
     if (data.icon == 'rain') {
         body.classList.add('weather', 'rain')
