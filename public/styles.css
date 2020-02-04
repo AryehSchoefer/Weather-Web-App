@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(rgb(86, 93, 145), rgb(25, 27, 42));
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    justify-content: center;
+    text-align: center;
+    height: 90vh;
+}
+
+/*
+.container {
+    background: linear-gradient(rgb(72, 77, 121), rgb(21, 23, 36));
+    border-radius: 5%;
+    box-shadow: 0px 5px 10px black;
+    max-width: 90%;
+    width: 600px;
+    margin: auto;
+    padding: 5% 0%;
+}
+*/
+
+.search-bar > input[type=text] {
+    border-radius: 2em 2em 2em 2em;
+    font-size: 1.5em;
+    margin-top: 2%;
+    padding: .25em .5em .25em .5em;
+    text-align: center;
+    width: 30vh;
+
+    -webkit-transition: width 0.2s ease-in-out; 
+    transition: width 0.2s ease-in-out;
+}
+
+.search-bar > input[type=text]:focus {
+    outline: none;
+    text-align: left;
+    width: 50vh;
+}
+
+.location > .icon {
+    height: 200px;
+    width: 315px;
+    fill: white;
+}
+
+.location > .city {
+    color: white;
+    font-weight: bolder;
+    margin: 1em;
+}
+
+.temperature {
+    color: white;
+}
+
+.temperature > .temperature-section {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    font-size: 2.5em;
+}
+
+.temperature > .temperature-degrees {
+    justify-content: space-around;
+    flex-direction: column;
+    margin-right: 5px;
+}
+
+#icon {
+    margin: auto;
+}
+
+#celsius {
+    color: white;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#fahrenheit {
+    color: grey;
+}
+
+#fahrenheit:hover {
+    cursor: pointer;
+
+}
+
+.temperature > .weather-description {
+    margin: 0.75em 1em 1em 1em;
+    font-size: 1em;
+}
