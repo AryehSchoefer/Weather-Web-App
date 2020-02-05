@@ -18,6 +18,8 @@ const body = document.body;
 const temperatureDegrees = document.querySelector('.temperature-degrees')
 const apparentTemperature = document.querySelector('.apparent-temperature')
 const weatherDescription = document.querySelector('.weather-description')
+const celsius = document.getElementById('celsius')
+const fahrenheit = document.getElementById('fahrenheit')
 const city = document.querySelector('.city')
 const searchBox = document.querySelector('.data-location-search')
 //const icon = document.querySelector('.icon') <- for scrapped images
@@ -69,8 +71,8 @@ function setWeatherData(data) {
     body.style.backgroundAttachment = 'fixed'
 
     // remove rain and snow effect by remove their classes
-    if (body.classList.contains("weather")) {
-        body.classList.remove("weather", "snow", "rain")
+    if (body.classList.contains('weather')) {
+        body.classList.remove('weather', 'snow', 'rain')
     } 
     // kinda performance intensive
     if (data.icon == 'rain') {
@@ -81,7 +83,16 @@ function setWeatherData(data) {
     }
 }
 
-icon.set('icon', 'CLEAR_DAY')
+function apparentTemperatureStringToInt(string) {
+    if (string.length === 15) {
+        apparentTemperatureInt = string.slice(11, 12)
+    } else if (string.length === 16) {
+        apparentTemperatureInt = string.slice(11, 13)
+    }
+    return apparentTemperatureInt
+}
+
+icon.set('icon', 'clear-day')
 icon.play()
 
 searchBox.addEventListener('keypress', (event) => {
@@ -93,6 +104,53 @@ searchBox.addEventListener('keypress', (event) => {
             })
     }
 })
+
+let celsiusActivated = true
+// code needs improvement
+celsius.addEventListener('click', () => {
+    if (!celsiusActivated) {
+        apparentTemperatureInt = apparentTemperatureStringToInt(apparentTemperature.innerText)
+
+        convertedCelsius = (parseInt(temperatureDegrees.innerText) - 32) * 5/9
+        convertedApparentCelsius = (parseInt(apparentTemperatureInt) - 32) * 5/9
+
+        temperatureDegrees.innerText = Math.round(convertedCelsius)
+        apparentTemperature.innerText = `Feels like ${Math.round(convertedApparentCelsius)}°C.`
+
+        celsius.style.color = 'white'
+        celsius.style.fontWeight = 'bold'
+        fahrenheit.style.color = 'grey'
+        fahrenheit.style.fontWeight = ''
+
+        celsius.classList.remove('hover-class')
+        fahrenheit.classList.add('hover-class')
+
+        celsiusActivated = true
+    }
+})
+
+fahrenheit.addEventListener('click', () => {
+    if (celsiusActivated) {
+        apparentTemperatureInt = apparentTemperatureStringToInt(apparentTemperature.innerText)
+
+        convertedFahrenheit = (parseInt(temperatureDegrees.innerText) * 9/5) + 32
+        convertedApparentFahrenheit = (parseInt(apparentTemperatureInt) * 9/5) + 32
+
+        temperatureDegrees.innerText = Math.round(convertedFahrenheit)
+        apparentTemperature.innerText = `Feels like ${Math.round(convertedApparentFahrenheit)}°F.`
+
+        fahrenheit.style.color = 'white'
+        fahrenheit.style.fontWeight = 'bold'
+        celsius.style.color = 'grey'
+        celsius.style.fontWeight = ''
+
+        fahrenheit.classList.remove('hover-class')
+        celsius.classList.add('hover-class')
+
+        celsiusActivated = false
+    }
+})
+
 
 /* replacement code if google places api is being used (needs to be adjusted though)
 searchBox.addListener('places_changed', () => {
