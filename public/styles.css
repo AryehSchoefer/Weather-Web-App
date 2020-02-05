@@ -81,9 +81,8 @@ body {
     font-size: .75em;
 }
 
-#fahrenheit:hover {
+.hover-class:hover {
     cursor: pointer;
-
 }
 
 .temperature > .weather-description {
