@@ -4,6 +4,7 @@
     margin: 0px;
     padding: 0px;
     box-sizing: border-box;
+    max-height: 1000px;
 }
 
 body {
@@ -12,6 +13,8 @@ body {
     background-attachment: fixed;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .container {
