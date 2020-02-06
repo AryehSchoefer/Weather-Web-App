@@ -13,6 +13,7 @@ const backgroundStyles = {
 const apiBase = 'api.openweathermap.org/data/2.5/'
 const API_KEY = '9081c26a42e71c0b2ecd31972a2c36ba'
 const proxy = 'https://cors-anywhere.herokuapp.com/' // for localhost use
+const lowPerformanceToggle = document.getElementById('low-performance-mode-toggle')
 const icon = new Skycons({'color': 'white'})
 const body = document.body;
 const temperatureDegrees = document.querySelector('.temperature-degrees')
@@ -70,16 +71,18 @@ function setWeatherData(data) {
     body.style.background = backgroundStyles[data.icon]
     body.style.backgroundAttachment = 'fixed'
 
-    // remove rain and snow effect by remove their classes
-    if (body.classList.contains('weather')) {
-        body.classList.remove('weather', 'snow', 'rain')
-    } 
-    // kinda performance intensive
-    if (data.icon == 'rain') {
-        body.classList.add('weather', 'rain')
-    }
-    if (data.icon == 'snow') {
-        body.classList.add('weather', 'snow')
+    if (!lowPerformanceToggle.checked) {
+        // remove rain and snow effect by remove their classes
+        if (body.classList.contains('weather')) {
+            body.classList.remove('weather', 'snow', 'rain')
+        } 
+        // kinda performance intensive
+        if (data.icon == 'rain') {
+            body.classList.add('weather', 'rain')
+        }
+        if (data.icon == 'snow') {
+            body.classList.add('weather', 'snow')
+        }
     }
 }
 
@@ -120,7 +123,7 @@ celsius.addEventListener('click', () => {
         celsius.style.color = 'white'
         celsius.style.fontWeight = 'bold'
         fahrenheit.style.color = 'grey'
-        fahrenheit.style.fontWeight = ''
+        fahrenheit.style.fontWeight = 'normal'
 
         celsius.classList.remove('hover-class')
         fahrenheit.classList.add('hover-class')
@@ -142,7 +145,7 @@ fahrenheit.addEventListener('click', () => {
         fahrenheit.style.color = 'white'
         fahrenheit.style.fontWeight = 'bold'
         celsius.style.color = 'grey'
-        celsius.style.fontWeight = ''
+        celsius.style.fontWeight = 'normal'
 
         fahrenheit.classList.remove('hover-class')
         celsius.classList.add('hover-class')
