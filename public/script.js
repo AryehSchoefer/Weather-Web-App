@@ -27,8 +27,30 @@ const humidity = document.querySelector('.humidity')
 const windSpeed = document.querySelector('.wind-speed')
 const precipProb = document.querySelector('.precip-probability')
 const detailedWeatherPageContainer = document.querySelector('.detailed-page-container')
+const dataMemory = []
+let celsiusActivated = true
+let currentTemp;
+let currentApparentTemp;
+let currentWindSpeed;
 //const icon = document.querySelector('.icon') <- for scrapped images
 //const searchBox = new google.maps.places.SearchBox(searchElement)
+
+icon.set('icon', 'clear-day')
+icon.play()
+
+searchBox.addEventListener('keypress', (event) => {
+    if (event.keyCode == 13) {
+        dataMemory.length = 0
+        currentTemp = undefined
+        currentApparentTemp = undefined
+        currentWindSpeed = undefined
+        searchedCity = searchBox.value
+        fetch(`${proxy}${apiBase}weather?q=${searchedCity}&APPID=${API_KEY}`)
+            .then(res => res.json()).then(data => {
+                manageResults(data)
+            })
+    }
+})
 
 function manageResults(data) {
     const coords = {
@@ -57,21 +79,35 @@ function sendDataToServer(coords) {
             longitude: longitude
         })
         }).then(res => res.json()).then(data => {
-            console.log(data)
             setWeatherData(data, cityAndCountryString)
     })
 }
 
 function setWeatherData(data) {
+    dataMemory.push(data) // add data to global scope
     city.textContent = cityAndCountryString
-    temperatureDegrees.textContent = Math.round(data.temperature)
-    apparentTemperature.textContent = `Feels like ${Math.round(data.apparentTemperature)}°C.`
     weatherDescription.textContent = `${data.summary}.`
     searchBox.value = ''
     humidity.textContent = `${((data.humidity) * 100).toFixed(0)}%`
-    windSpeed.textContent = `${Math.round(data.windSpeed)} km/h`
     precipProb.textContent = `${Math.round((data.precipProbability) * 100)}%`
 
+    if (!celsiusActivated) {
+        let temperatureDegreesInt = Math.round((data.temperature * 9/5) + 32)
+        let apparentTemperatureInt = Math.round((data.apparentTemperature * 9/5) + 32)
+        let windSpeedInt = Math.round((data.windSpeed / 1.609))
+
+        temperatureDegrees.textContent = Math.round(temperatureDegreesInt)
+        apparentTemperature.textContent = `Feels like ${Math.round(apparentTemperatureInt)}°F.`
+        windSpeed.innerText = `${windSpeedInt} mph`
+
+        currentTemp = temperatureDegreesInt
+        currentApparentTemp = apparentTemperatureInt
+        currentWindSpeed = windSpeedInt
+    } else {
+        temperatureDegrees.textContent = Math.round(data.temperature)
+        apparentTemperature.textContent = `Feels like ${Math.round(data.apparentTemperature)}°C.`
+        windSpeed.innerText = `${Math.round(data.windSpeed)} km/h`
+    }
 
     icon.set('icon', data.icon)
     icon.play()
@@ -94,43 +130,18 @@ function setWeatherData(data) {
     }
 }
 
-function apparentTemperatureStringToInt(string) {
-    if (string.length === 15) {
-        apparentTemperatureInt = string.slice(11, 12)
-    } else if (string.length === 16) {
-        apparentTemperatureInt = string.slice(11, 13)
-    }
-    return apparentTemperatureInt
-}
-
 function showDetailedWeatherPage() {
+    body.style.overflowY = 'auto'
     detailedWeatherPageContainer.style.display = 'block'
     detailedWeatherPageContainer.scrollIntoView({
         behavior: 'smooth'
     })
 }
 
-icon.set('icon', 'clear-day')
-icon.play()
-
-searchBox.addEventListener('keypress', (event) => {
-    if (event.keyCode == 13) {
-        searchedCity = searchBox.value
-        fetch(`${proxy}${apiBase}weather?q=${searchedCity}&APPID=${API_KEY}`)
-            .then(res => res.json()).then(data => {
-                manageResults(data)
-            })
-    }
-})
-
-let celsiusActivated = true
-// code needs improvement
 celsius.addEventListener('click', () => {
     if (!celsiusActivated) {
-        apparentTemperatureInt = apparentTemperatureStringToInt(apparentTemperature.innerText)
-
-        convertedCelsius = (parseInt(temperatureDegrees.innerText) - 32) * 5/9
-        convertedApparentCelsius = (parseInt(apparentTemperatureInt) - 32) * 5/9
+        convertedCelsius = (currentTemp - 32) * 5/9
+        convertedApparentCelsius = (currentApparentTemp - 32) * 5/9
 
         temperatureDegrees.innerText = Math.round(convertedCelsius)
         apparentTemperature.innerText = `Feels like ${Math.round(convertedApparentCelsius)}°C.`
@@ -143,16 +154,26 @@ celsius.addEventListener('click', () => {
         celsius.classList.remove('hover-class')
         fahrenheit.classList.add('hover-class')
 
+        convertedWindSpeed = currentWindSpeed * 1.609
+        windSpeed.innerText = `${Math.round(convertedWindSpeed)} km/h`
+
+        currentWindSpeed = convertedWindSpeed
+        currentTemp = convertedCelsius
+        currentApparentTemp = convertedApparentCelsius
         celsiusActivated = true
     }
 })
 
 fahrenheit.addEventListener('click', () => {
     if (celsiusActivated) {
-        apparentTemperatureInt = apparentTemperatureStringToInt(apparentTemperature.innerText)
 
-        convertedFahrenheit = (parseInt(temperatureDegrees.innerText) * 9/5) + 32
-        convertedApparentFahrenheit = (parseInt(apparentTemperatureInt) * 9/5) + 32
+        if (typeof(currentTemp && currentApparentTemp) == 'number') {
+            convertedFahrenheit = (currentTemp * 9/5) + 32
+            convertedApparentFahrenheit = (currentApparentTemp * 9/5) + 32
+        } else {
+            convertedFahrenheit = (dataMemory[0].temperature * 9/5) + 32
+            convertedApparentFahrenheit = (dataMemory[0].apparentTemperature * 9/5) + 32
+        }
 
         temperatureDegrees.innerText = Math.round(convertedFahrenheit)
         apparentTemperature.innerText = `Feels like ${Math.round(convertedApparentFahrenheit)}°F.`
@@ -165,6 +186,17 @@ fahrenheit.addEventListener('click', () => {
         fahrenheit.classList.remove('hover-class')
         celsius.classList.add('hover-class')
 
+        if (typeof(currentWindSpeed) == 'number') {
+            convertedWindSpeed = Math.round(currentWindSpeed / 1.690)
+        } else {
+            convertedWindSpeed = Math.round(dataMemory[0].windSpeed / 1.609)
+        }
+
+        windSpeed.innerText = `${convertedWindSpeed} mph`
+
+        currentWindSpeed = convertedWindSpeed
+        currentTemp = convertedFahrenheit
+        currentApparentTemp = convertedApparentFahrenheit
         celsiusActivated = false
     }
 })
