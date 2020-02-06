@@ -11,6 +11,14 @@
     <title>Weather App</title>
 </head>
 <body>
+    <div class="low-performance-mode">
+        <label class="low-performance-switch">
+            <input type="checkbox" id="low-performance-mode-toggle">
+            <span class="slider"></span>
+        </label>
+        <p>Low performance mode</p>
+    </div>
+
     <div class="container">
         <div class="location">
             <canvas id="icon" width="256" height="256"></canvas>
@@ -31,7 +39,7 @@
 
         <div class="search-bar">
             <input type="text" placeholder="Search for location.." class="data-location-search">
-        </div>
+        </div>  
     </div>
 </body>
 </html>
