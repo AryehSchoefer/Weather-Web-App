@@ -132,6 +132,16 @@ body {
     font-size: 1em;
 }
 
+.icon-to-detailed-page {
+    margin-top: 4em;
+    width: 35px;
+    height: auto;
+}
+
+.icon-to-detailed-page:hover {
+    cursor: pointer;
+}
+
 /* styles for low performance switch */
 .low-performance-mode {
     display: flex;
@@ -194,6 +204,26 @@ body {
 .low-performance-switch input:checked + .slider:before {
     -webkit-transform: translateX(23px);
     transform: translateX(23px);
+}
+
+.detailed-page-container {
+    display: none;
+    color: white;
+    margin-top: 3em;
+    text-align: center;
+}
+
+.flex-box-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-box {
+    margin: 8em;
+}
+
+.info-box h2 {
+    margin-top: 1em;
 }
 
 /*
