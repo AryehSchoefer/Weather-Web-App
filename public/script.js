@@ -23,6 +23,10 @@ const celsius = document.getElementById('celsius')
 const fahrenheit = document.getElementById('fahrenheit')
 const city = document.querySelector('.city')
 const searchBox = document.querySelector('.data-location-search')
+const humidity = document.querySelector('.humidity')
+const windSpeed = document.querySelector('.wind-speed')
+const precipProb = document.querySelector('.precip-probability')
+const detailedWeatherPageContainer = document.querySelector('.detailed-page-container')
 //const icon = document.querySelector('.icon') <- for scrapped images
 //const searchBox = new google.maps.places.SearchBox(searchElement)
 
@@ -64,6 +68,10 @@ function setWeatherData(data) {
     apparentTemperature.textContent = `Feels like ${Math.round(data.apparentTemperature)}°C.`
     weatherDescription.textContent = `${data.summary}.`
     searchBox.value = ''
+    humidity.textContent = `${((data.humidity) * 100).toFixed(0)}%`
+    windSpeed.textContent = `${Math.round(data.windSpeed)} km/h`
+    precipProb.textContent = `${Math.round((data.precipProbability) * 100)}%`
+
 
     icon.set('icon', data.icon)
     icon.play()
@@ -93,6 +101,13 @@ function apparentTemperatureStringToInt(string) {
         apparentTemperatureInt = string.slice(11, 13)
     }
     return apparentTemperatureInt
+}
+
+function showDetailedWeatherPage() {
+    detailedWeatherPageContainer.style.display = 'block'
+    detailedWeatherPageContainer.scrollIntoView({
+        behavior: 'smooth'
+    })
 }
 
 icon.set('icon', 'clear-day')
