@@ -13,8 +13,7 @@ body {
     background-attachment: fixed;
     font-family: 'Montserrat', sans-serif;
     text-align: center;
-    overflow-y: hidden;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .container {

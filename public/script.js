@@ -163,7 +163,6 @@ function setWeatherData(data) {
 }
 
 function showDetailedWeatherPage() {
-    body.style.overflowY = 'auto'
     detailedWeatherPageContainer.style.display = 'block'
     detailedWeatherPageContainer.scrollIntoView({
         behavior: 'smooth'
