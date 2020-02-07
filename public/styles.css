@@ -22,6 +22,7 @@ body {
     flex-direction: column;
     justify-content: center;
     height: 90vh;
+    margin-bottom: 3em;
 }
 
 .search-bar > input[type=text] {
@@ -145,6 +146,16 @@ body {
     cursor: pointer;
 }
 
+.icon-to-main-page {
+    margin-top: 4em;
+    width: 35px;
+    height: auto;
+}
+
+.icon-to-main-page:hover {
+    cursor: pointer;
+}
+
 /* styles for low performance switch */
 .low-performance-mode {
     display: flex;
@@ -212,7 +223,6 @@ body {
 .detailed-page-container {
     display: none;
     color: white;
-    margin-top: 3em;
     text-align: center;
 }
 
@@ -222,11 +232,15 @@ body {
 }
 
 .info-box {
-    margin: 8em;
+    margin: 7em 7em 5em 7em;
 }
 
 .info-box h2 {
     margin-top: 1em;
+}
+
+.info-box:last-child {
+    margin-bottom: 8.5em;
 }
 
 /*
