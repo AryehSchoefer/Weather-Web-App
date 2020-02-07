@@ -17,7 +17,7 @@
             <input type="checkbox" id="low-performance-mode-toggle">
             <span class="slider"></span>
         </label>
-        <p>Low performance mode</p>
+        <p id="low-performance-mode-text">Low performance mode</p>
     </div>
 
     <div class="container">
@@ -49,6 +49,9 @@
 
     <div class="detailed-page-container">
         <div class="flex-box-container">
+            <div class="switch-to-main-page">
+                <img src="icons/doubleArrowUpWhite.svg" class="icon-to-main-page" onclick="showMainWeatherPage()">
+            </div>
             <div class="info-box">
                 <h1>Humidity:</h1>
                 <h2 class="humidity">TBD</h2>
