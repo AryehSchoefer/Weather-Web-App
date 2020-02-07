@@ -2,7 +2,7 @@ const backgroundStyles = {
     'clear-day': 'linear-gradient(120deg, #f6d365 0%, #fda085 100%)',
     'clear-night': 'linear-gradient(to top, #30cfd0 0%, #330867 100%)',
     'partly-cloudy-day': 'linear-gradient(to top, #37ecba 0%, #72afd3 100%)',
-    'partly-cloud-night': 'linear-gradient(to top, #5ee7df 0%, #b490ca 100%)',
+    'partly-cloudy-night': 'linear-gradient(to top, #5ee7df 0%, #b490ca 100%)',
     'cloudy': 'linear-gradient(60deg, #29323c 0%, #485563 100%)',
     'rain': 'linear-gradient(rgb(25, 27, 42), rgb(86, 93, 145))',
     'snow': 'linear-gradient(to right, #243949 0%, #517fa4 100%)',
@@ -14,6 +14,7 @@ const apiBase = 'api.openweathermap.org/data/2.5/'
 const API_KEY = '9081c26a42e71c0b2ecd31972a2c36ba'
 const proxy = 'https://cors-anywhere.herokuapp.com/' // for localhost use
 const lowPerformanceToggle = document.getElementById('low-performance-mode-toggle')
+const lowPerformanceText = document.getElementById('low-performance-mode-text')
 const icon = new Skycons({'color': 'white'})
 const body = document.body;
 const temperatureDegrees = document.querySelector('.temperature-degrees')
@@ -38,17 +39,25 @@ let currentWindSpeed;
 icon.set('icon', 'clear-day')
 icon.play()
 
-searchBox.addEventListener('keypress', (event) => {
+searchBox.addEventListener('keypress', async (event) => {
     if (event.keyCode == 13) {
         dataMemory.length = 0
         currentTemp = undefined
         currentApparentTemp = undefined
         currentWindSpeed = undefined
         searchedCity = searchBox.value
+
+        // Async await Promises syntax
+        const response = await fetch(`${proxy}${apiBase}weather?q=${searchedCity}&APPID=${API_KEY}`)
+        const data = await response.json()
+        manageResults(data)
+
+        /* Basic Promises syntax
         fetch(`${proxy}${apiBase}weather?q=${searchedCity}&APPID=${API_KEY}`)
             .then(res => res.json()).then(data => {
                 manageResults(data)
             })
+        */
     }
 })
 
@@ -63,11 +72,28 @@ function manageResults(data) {
     sendDataToServer(coords, cityAndCountryString)
 }
 
-function sendDataToServer(coords) {
+async function sendDataToServer(coords) {
     const latitude = coords.latitude
     const longitude = coords.longitude
 
     // post longitude and latitude to our server in server.js, get data back from server.js and .then set that data on website 
+    // Async await Promises syntax
+    const response = await fetch('/weather', {
+        method: 'Post',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            latitude: latitude,
+            longitude: longitude
+        })
+    })
+    const data = await response.json()
+
+    setWeatherData(data, cityAndCountryString)
+    
+    /* Basic Promises syntax
     fetch('/weather', {
         method: 'POST',
         headers: {
@@ -80,7 +106,8 @@ function sendDataToServer(coords) {
         })
         }).then(res => res.json()).then(data => {
             setWeatherData(data, cityAndCountryString)
-    })
+        })
+    */
 }
 
 function setWeatherData(data) {
@@ -114,6 +141,11 @@ function setWeatherData(data) {
 
     body.style.background = backgroundStyles[data.icon]
     body.style.backgroundAttachment = 'fixed'
+    lowPerformanceText.style.textShadow = ''
+
+    if (data.icon == 'clear-day') {
+        lowPerformanceText.style.textShadow = '-1px 0px 12px black'
+    }
 
     if (!lowPerformanceToggle.checked) {
         // remove rain and snow effect by remove their classes
@@ -135,6 +167,13 @@ function showDetailedWeatherPage() {
     detailedWeatherPageContainer.style.display = 'block'
     detailedWeatherPageContainer.scrollIntoView({
         behavior: 'smooth'
+    })
+}
+
+function showMainWeatherPage () {
+    body.scrollIntoView({
+        behavior: 'smooth',
+        alignToTop: true
     })
 }
 
