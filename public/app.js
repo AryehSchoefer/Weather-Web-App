@@ -15,6 +15,8 @@ const API_KEY = '9081c26a42e71c0b2ecd31972a2c36ba'
 const proxy = 'https://cors-anywhere.herokuapp.com/' // for localhost use
 const lowPerformanceToggle = document.getElementById('low-performance-mode-toggle')
 const lowPerformanceText = document.getElementById('low-performance-mode-text')
+const loading = document.querySelector('.loading')
+const iconCanvas = document.getElementById('icon')
 const icon = new Skycons({ 'color': 'white' })
 const body = document.body
 const temperatureDegrees = document.querySelector('.temperature-degrees')
@@ -47,9 +49,19 @@ searchBox.addEventListener('keypress', async event => {
         currentWindSpeed = undefined
         searchedCity = searchBox.value
 
+        iconCanvas.style.display = 'none'
+        loading.style.display = 'inline'
+        city.textContent = 'LOADING...'
+
         const response = await fetch(
             `${proxy}${apiBase}weather?q=${searchedCity}&APPID=${API_KEY}`
         )
+
+        if (response.status != 200) {
+            loading.style.display = 'none'
+            iconCanvas.style.display = 'inline'
+            city.textContent = 'LOCATION NOT FOUND'
+        }
 
         const openWeatherData = await response.json()
         manageResults(openWeatherData)
@@ -116,6 +128,8 @@ function setWeatherData(data) {
         windSpeed.innerText = `${Math.round(data.windSpeed)} km/h`
     }
 
+    loading.style.display = 'none'
+    iconCanvas.style.display = 'inline'
     icon.set('icon', data.icon)
     icon.play()
 

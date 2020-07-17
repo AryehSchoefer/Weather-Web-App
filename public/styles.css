@@ -81,6 +81,10 @@ body {
     }
 }
 
+.loading {
+    display: none;
+}
+
 .location > .icon {
     height: 200px;
     width: 315px;
